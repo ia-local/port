@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniversMC - Assistant IA Multi-Port</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Assistant IA UniversMC</h1>
+        <p>Interagissez avec notre IA sur le port principal (public).</p>
+
+        <div class="chat-section">
+            <textarea id="promptInput" placeholder="Posez votre question à l'IA..."></textarea>
+            <button id="sendPromptButton">Envoyer</button>
+        </div>
+
+        <div class="response-section">
+            <h2>Réponse de l'IA :</h2>
+            <pre id="aiResponse"></pre>
+        </div>
+
+        <hr>
+
+        <h2>Gestion des Interactions (API Principale)</h2>
+        <button id="loadInteractions">Charger les interactions</button>
+        <ul id="interactionsList">
+            <li>Chargement des interactions...</li>
+        </ul>
+
+        <hr>
+
+        <h2>Accès Administration (Port Séparé)</h2>
+        <p>Les fonctionnalités d'administration (logs, configuration avancée) sont accessibles via le port <strong id="adminPortDisplay">3001</strong>.</p>
+        <p>
+            <a href="#" id="adminLink" target="_blank">Accéder à l'API Admin (Console/Insomnia/Postman)</a>
+        </p>
+        <button id="loadLogsButton">Charger les Logs (Port Admin)</button>
+        <pre id="logsDisplay"></pre>
+
+        <hr>
+
+        <h2>Changer le Modèle Groq (API Principale)</h2>
+        <select id="modelSelect">
+            <option value="">Chargement des modèles...</option>
+        </select>
+        <button id="updateModelButton">Mettre à jour le modèle</button>
+        <p id="currentModelDisplay">Modèle actuel: N/A</p>
+
+    </div>
+
+    <script src="js/scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutoriel : Optimisation des Canevas avec Gemini</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Styles généraux pour le corps */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Gris très clair */
+            color: #334155; /* Gris foncé */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Styles de l'en-tête */
+        .header {
+            background-color: #4f46e5; /* Indigo */
+            color: white;
+            padding: 1.5rem 2.5rem;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column; /* Pour empiler le logo et la nav sur mobile */
+            align-items: center;
+            justify-content: space-between; /* Espacement entre logo et nav sur desktop */
+            gap: 1rem; /* Espacement entre les éléments sur mobile */
+        }
+        @media (min-width: 768px) { /* Styles pour les écrans plus larges (tablette et desktop) */
+            .header {
+                flex-direction: row;
+            }
+        }
+        .header .logo {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .header nav a {
+            color: white;
+            margin: 0 0.8rem; /* Espacement horizontal */
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+        }
+        .header nav a:hover {
+            color: #a78bfa; /* Violet clair */
+            transform: translateY(-2px);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Styles du conteneur principal du contenu */
+        .main-content {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            padding: 2.5rem;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            flex-grow: 1; /* Permet au conteneur principal de prendre l'espace disponible */
+        }
+
+        /* Styles des titres de section */
+        h1 {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #1a202c; /* Gris très foncé */
+            margin-bottom: 1.5rem;
+            border-bottom: 4px solid #4f46e5; /* Indigo */
+            padding-bottom: 1rem;
+            text-align: center;
+        }
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2d3748; /* Gris foncé */
+            margin-top: 3rem;
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid #cbd5e0; /* Gris clair */
+            padding-bottom: 0.6rem;
+        }
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #4a5568; /* Gris moyen */
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Styles des paragraphes */
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #475569; /* Gris bleuté */
+        }
+
+        /* Styles pour les blocs de code */
+        .code-block {
+            background-color: #2d3748; /* Couleur sombre pour le code */
+            color: #f8fafc; /* Texte clair */
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .code-block code {
+            display: block;
+            white-space: pre-wrap; /* Permet les retours à la ligne */
+        }
+        .code-block .lang-label {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.8rem;
+            background-color: #4f46e5;
+            color: #f8fafc;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* Styles des blocs terminaux */
+        .terminal-block {
+            background-color: #1a202c; /* Encore plus sombre pour le terminal */
+            color: #10b981; /* Vert pour le texte du terminal */
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px dashed #4a5568;
+        }
+        .terminal-block code {
+            display: block;
+            white-space: pre-wrap;
+        }
+
+        /* Classes de surbrillance */
+        .highlight-blue { color: #3b82f6; font-weight: bold; }
+        .highlight-green { color: #10b981; font-weight: bold; }
+        .highlight-purple { color: #8b5cf6; font-weight: bold; }
+
+        /* Boîtes de notes/informations */
+        .note-box {
+            background-color: #e0f2fe; /* Bleu très clair */
+            border-left: 5px solid #2563eb; /* Bleu */
+            padding: 1.2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            color: #1e40af; /* Bleu foncé */
+        }
+
+        /* Styles du pied de page */
+        .footer {
+            background-color: #334155; /* Gris foncé */
+            color: #cbd5e0; /* Gris clair */
+            padding: 1.8rem 2.5rem;
+            text-align: center;
+            margin-top: auto; /* Pousse le pied de page vers le bas */
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">Tutoriel Canvas IA</div>
+        <nav>
+            <a href="#introduction">Introduction</a>
+            <a href="#html-css">HTML & CSS</a>
+            <a href="#react-integration">Intégration React</a>
+            <a href="#ai-interaction">Interaction IA</a>
+            <a href="#conclusion">Conclusion</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section id="introduction">
+            <h1>Bienvenue dans le Tutoriel sur l'Optimisation des Canevas avec Gemini</h1>
+            <p>
+                Ce tutoriel interactif vous guidera à travers les étapes de création et d'optimisation d'interfaces utilisateur riches et dynamiques (les "canevas") directement au sein d'une conversation avec un modèle d'IA comme Gemini. Apprenez à exploiter la puissance du HTML, CSS, JavaScript (React) et des appels d'API pour construire des expériences utilisateur immersives.
+            </p>
+            <p>
+                Nous explorerons comment intégrer des modèles d'IA (comme Groq ou Gemma) pour générer du contenu, des suggestions, ou même des visualisations complexes en temps réel, rendant vos applications plus intelligentes et réactives.
+            </p>
+        </section>
+
+        <section id="html-css">
+            <h2>Étape 1 : Les Fondations - HTML & CSS pour le Canevas</h2>
+            <p>
+                La première étape consiste à établir une structure HTML solide et à la styliser avec Tailwind CSS pour un design responsive et moderne. Nous allons commencer par un boilerplate HTML minimaliste qui servira de base à toutes nos explorations.
+            </p>
+            <h3>1.1 Structure de Base HTML</h3>
+            <p>
+                Voici le code HTML initial pour votre page. Collez-le dans `src/index.html`.
+            </p>
+            <div class="code-block">
+                <span class="lang-label">HTML</span>
+                <pre><code>
+&lt;!-- src/index.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Mon Canevas de Tutoriel&lt;/title&gt;
+    &lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+    &lt;style&gt;
+        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; min-height: 100vh; }
+        .content-area { max-width: 800px; margin: 2rem auto; padding: 2rem; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { font-size: 2.2em; color: #1e3a8a; text-align: center; margin-bottom: 1.5rem; }
+        p { font-size: 1.1em; line-height: 1.7; color: #334155; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="content-area"&gt;
+        &lt;h1&gt;Section HTML de Base pour le Tutoriel&lt;/h1&gt;
+        &lt;p&gt;Ceci est le contenu initial de votre canevas. Nous allons l'enrichir étape par étape.&lt;/p&gt;
+        &lt;button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md mt-4"&gt;
+            Commencer l'exploration
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                </code></pre>
+            </div>
+            <h3>Dans votre Terminal :</h3>
+            <div class="terminal-block">
+                <pre><code>
+# 1. Créez le fichier source
+touch src/index.html
+
+# 2. Ouvrez-le avec votre éditeur et collez le code ci-dessus
+vim src/index.html
+
+# 3. Copiez le fichier source vers le répertoire public/
+cp src/index.html public/index.html
+
+# 4. Lancez votre serveur (si ce n'est pas déjà fait)
+# node groq-server.js  (ou python3 -m http.server 5007)
+
+# 5. Ouvrez votre navigateur à l'adresse http://localhost:5007/
+# Puis dans Gemini, utilisez la commande /canvas pour afficher la page.
+                </code></pre>
+            </div>
+        </section>
+
+        <section id="react-integration">
+            <h2>Étape 2 : Intégration de Composants Dynamiques avec React</h2>
+            <p>
+                Pour des interfaces plus complexes et interactives, React est un excellent choix. Nous montrerons comment un composant React peut être intégré et interagir avec le reste de votre page.
+            </p>
+            <p>
+                *(Contenu React à venir dans les prochaines étapes)*
+            </p>
+        </section>
+
+        <section id="ai-interaction">
+            <h2>Étape 3 : Interaction avec l'IA (API Gemini)</h2>
+            <p>
+                Le cœur de ce tutoriel est l'intégration des capacités de l'IA. Nous verrons comment faire des appels à l'API Gemini pour générer du texte, des données structurées ou même des images, et afficher ces résultats dans votre canevas.
+            </p>
+            <p>
+                *(Contenu d'interaction IA à venir dans les prochaines étapes)*
+            </p>
+        </section>
+
+        <section id="conclusion">
+            <h2>Conclusion et Prochaines Étapes</h2>
+            <p>
+                Ce tutoriel est une feuille de route pour construire des expériences riches et intelligentes. Restez à l'écoute pour les prochaines mises à jour qui approfondiront chaque section.
+            </p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Tutoriel Canvas IA. Tous droits réservés.</p>
+        <p>Construit avec <span class="highlight-purple">Gemini</span> pour des expériences interactives.</p>
+    </footer>
+</body>
+</html>

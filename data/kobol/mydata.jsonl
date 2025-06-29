@@ -1,0 +1,5 @@
+[
+    {"role":"sytem","content":"prompt --system"},
+    {"role":"assistant","content":"system : description"},
+    {"role":"user","content":"request"}
+]

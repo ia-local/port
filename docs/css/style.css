@@ -1,0 +1,124 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #4CAF50;
+}
+
+h1, h2 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+hr {
+    border: none;
+    border-top: 1px dashed #ccc;
+    margin: 40px 0;
+}
+
+.chat-section, .response-section, .admin-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #eee;
+}
+
+textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 80px;
+    resize: vertical;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    background-color: #3e8e41;
+}
+
+#aiResponse, #logsDisplay {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 4px;
+    white-space: pre-wrap; /* Conserve les retours à la ligne */
+    word-wrap: break-word; /* Casse les mots longs */
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9em;
+    color: #34495e;
+    border: 1px solid #dcdcdc;
+    max-height: 400px; /* Limite la hauteur */
+    overflow-y: auto; /* Ajoute un scroll si le contenu est trop long */
+}
+
+#interactionsList {
+    list-style-type: none;
+    padding: 0;
+}
+
+#interactionsList li {
+    background-color: #f0f0f0;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 4px;
+    border-left: 5px solid #007bff;
+    font-size: 0.9em;
+}
+
+#interactionsList li strong {
+    color: #007bff;
+}
+
+#adminLink {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    margin-top: 10px;
+}
+
+#adminLink:hover {
+    background-color: #0056b3;
+}
+
+select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-right: 10px;
+}

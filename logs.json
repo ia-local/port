@@ -1,0 +1,52 @@
+[
+  {
+    "timestamp": "2025-06-29T19:31:26.528Z",
+    "type": "CRUD_READ_ALL",
+    "status": "SUCCESS",
+    "count": 0
+  },
+  {
+    "timestamp": "2025-06-29T19:31:26.863Z",
+    "type": "MODELS_LIST_FETCH",
+    "status": "SUCCESS",
+    "count": 22
+  },
+  {
+    "timestamp": "2025-06-29T19:31:49.409Z",
+    "type": "LOG_READ",
+    "status": "SUCCESS",
+    "count": 2
+  },
+  {
+    "timestamp": "2025-06-29T19:31:59.891Z",
+    "type": "LOG_READ",
+    "status": "SUCCESS",
+    "count": 3
+  },
+  {
+    "timestamp": "2025-06-29T19:32:05.640Z",
+    "type": "CRUD_READ_ALL",
+    "status": "SUCCESS",
+    "count": 0
+  },
+  {
+    "timestamp": "2025-06-29T19:32:10.403Z",
+    "type": "AI_INTERACTION",
+    "status": "REQUESTED",
+    "userPrompt": "test..."
+  },
+  {
+    "timestamp": "2025-06-29T19:32:10.941Z",
+    "type": "AI_INTERACTION",
+    "status": "SUCCESS",
+    "interactionId": "b897adec-d055-4b01-a16e-5f82a196ab06",
+    "userPrompt": "test...",
+    "aiResponse": "Bonjour ! Je suis ravi de vous aider. Je suis un assistant IA expert en développement et en conseil technique. Je serai ravi de fournir des réponses précises, concises et utiles sur des sujets de prog..."
+  },
+  {
+    "timestamp": "2025-06-29T19:32:10.952Z",
+    "type": "CRUD_READ_ALL",
+    "status": "SUCCESS",
+    "count": 1
+  }
+]

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Canevas d'itération JSON</title>
+</head>
+<body>
+
+<h1>Exemple d'itération sur une base JSON</h1>
+
+<!-- Zone d'affichage des données -->
+<div id="resultats"></div>
+
+<script>
+// Fonction pour charger et traiter le fichier JSON
+fetch('data.json') // Remplacer par le chemin de votre fichier JSON
+  .then(response => response.json())
+  .then(data => {
+    const container = document.getElementById('resultats');
+    data.forEach(item => {
+      // Créer un élément pour chaque item
+      const element = document.createElement('p');
+      element.textContent = `{ role : ${item.role}, name : ${item.name}, content : ${item.content} },`;
+      container.appendChild(element);
+    });
+  })
+  .catch(error => console.error('Erreur de chargement:', error));
+</script>
+
+</body>
+</html>

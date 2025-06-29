@@ -1,0 +1,60 @@
+[
+{
+    "name":"Mistral",
+    "model": "mixtral-8x7b-32768",
+    "temperature": 0.5,
+    "max_tokens": "4096",
+    "top_p": "1",
+    "stream": "True",
+    "stop": "None"
+},
+{
+"name":"llma",
+    "model": "llama3-8b-8192",
+    "temperature": 0.5,
+    "max_tokens": "4096",
+    "top_p": "1",
+    "stream": "True",
+    "stop": "None"
+},
+{
+    "name":"gemma",
+    "model": "gemma2-9b-it",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "temperature": 0.5,
+    "max_tokens": "4096",
+    "top_p": "1",
+    "stream": "True",
+    "stop": "None"
+},
+{
+    "name":"gpt",
+    "model": "gpt-4o",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "temperature": 0.5,
+    "max_tokens": "4096",
+    "top_p": "1",
+    "stream": "True",
+    "stop": "None"
+},
+{
+    "name":"dall-e",
+    "model": "dall-e-3",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "temperature": 0.5,
+    "max_tokens": "4096",
+    "top_p": "1",
+    "stream": "True",
+    "stop": "None"
+},
+{
+    "name":"deepSeek",
+    "model": "deepseek-r1-distill-llama-70b",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "temperature": 0.5,
+    "max_tokens": "4096",
+    "top_p": "1",
+    "stream": "True",
+    "stop": "None"
+}
+]

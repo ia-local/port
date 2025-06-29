@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutoriel Canvas IA - Votre Application</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        /* Styles de base pour le corps et la mise en page générale */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        /* Styles de l'en-tête */
+        .header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 1.5rem 2.5rem;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .header {
+                flex-direction: row;
+            }
+        }
+        .header .logo {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .header nav a {
+            color: white;
+            margin: 0 0.8rem;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+        }
+        .header nav a:hover {
+            color: #a78bfa;
+            transform: translateY(-2px);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        /* Conteneur principal du contenu */
+        .main-container {
+            flex-grow: 1; /* Permet au conteneur principal de prendre l'espace disponible */
+            max-width: 1200px; /* Largeur maximale pour le contenu */
+            margin: 2.5rem auto;
+            padding: 2.5rem;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            display: flex; /* Utilisation de flexbox pour la mise en page interne */
+            flex-direction: column; /* Par défaut, les sections s'empilent */
+            gap: 2rem; /* Espacement entre les sections */
+        }
+        @media (min-width: 1024px) { /* Sur les grands écrans, mise en page en colonnes */
+            .main-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start; /* Aligner les éléments en haut */
+            }
+        }
+        /* Styles pour les sections spécifiques */
+        .tutorial-content {
+            flex: 2; /* Prend plus d'espace sur les grands écrans */
+            min-width: 60%; /* S'assure qu'il y a assez de place */
+        }
+        .canvas-app-container {
+            flex: 1; /* Prend l'espace restant */
+            min-width: 35%; /* S'assure qu'il y a assez de place */
+            background-color: #ecf0f1; /* Fond clair pour le conteneur de l'app canvas */
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            display: flex; /* Pour centrer l'iframe */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Styles pour l'iframe */
+        .canvas-iframe {
+            width: 100%;
+            height: 500px; /* Hauteur fixe pour l'exemple, ajustez si besoin */
+            border: 2px solid #4f46e5; /* Bordure indigo */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background-color: white; /* Fond blanc pour l'iframe */
+        }
+        /* Styles du pied de page */
+        .footer {
+            background-color: #334155;
+            color: #cbd5e0;
+            padding: 1.8rem 2.5rem;
+            text-align: center;
+            margin-top: auto;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">Tutoriel Canvas IA</div>
+        <nav>
+            <a href="#introduction">Introduction</a>
+            <a href="#html-css">HTML & CSS</a>
+            <a href="#react-integration">Intégration React</a>
+            <a href="#ai-interaction">Interaction IA</a>
+            <a href="#conclusion">Conclusion</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <section class="tutorial-content">
+            <h1>Tutoriel : Optimisation des Canevas avec Gemini</h1>
+            <p>
+                Bienvenue dans ce tutoriel interactif. Ici, vous trouverez les explications détaillées et les snippets de code pour construire votre application.
+            </p>
+            <section id="introduction-tutorial">
+                <h2>Introduction</h2>
+                <p>
+                    Ce tutoriel vous guidera pas à pas...
+                </p>
+            </section>
+            <section id="html-css-tutorial">
+                <h2>HTML & CSS</h2>
+                <p>
+                    Les bases de la structure et du style...
+                </p>
+                </section>
+            </section>
+
+        <aside class="canvas-app-container">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Votre Canevas Interactif</h2>
+            <p class="text-gray-600 text-center mb-6">
+                Le contenu de ce canevas est chargé depuis un fichier HTML séparé pour faciliter l'itération.
+            </p>
+            <iframe
+                src="fram.html"
+                title="Application Canvas Interactive"
+                class="canvas-iframe"
+                sandbox="allow-scripts allow-same-origin"
+            >
+                Votre navigateur ne supporte pas les iframes.
+            </iframe>
+        </aside>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Tutoriel Canvas IA. Tous droits réservés.</p>
+        <p>Construit avec <span class="text-purple-300 font-semibold">Gemini</span> pour des expériences interactives.</p>
+    </footer>
+
+    </body>
+</html>

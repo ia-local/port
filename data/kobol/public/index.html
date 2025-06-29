@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog AGI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Blog AGI</h1>
+        <nav>
+            <ul>
+                <li><a href="#accueil">Accueil</a></li>
+                <li><a href="#topics">Thématiques</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="accueil">
+            <h2>Bienvenue sur le Blog AGI Caen</h2>
+            <p>Découvrez les dernières actualités et tendances en intelligence artificielle à Caen.</p>
+        </section>
+
+        <section id="topics">
+            <h2>AI > Thématiques</h2>
+            <ul>
+                <li><a href="#topic1q" data-topic="AGI_et_astronomie">Astronomie</a></li>
+            </ul>
+        </section>
+
+        <section id="image">
+            <h2>Image </h2>
+            <div id="resultatImage"></div>
+            <button id="genererImage">Générer une Image</button>
+        </section>
+
+        <section id="topic1" class="topic-content">
+            <h2>AGI et Santé</h2>
+            <div class="imageTopic" id="imageTopic1"></div> 
+            <div id="resultatsTopic1"></div>                
+            <button class="regenerate-content" data-topic="AGI_et_Sante">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_Sante">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_Sante">Enregistrer</button>
+        </section>
+
+        <section id="topic2" class="topic-content">
+            <h2>AGI et Éducation</h2>
+            <div class="imageTopic" id="imageTopic2"></div> 
+            <div id="resultatsTopic2"></div>
+            <button class="regenerate-content" data-topic="AGI_et_Education">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_Education">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_Education">Enregistrer</button>
+        </section>
+
+        <section id="topic3" class="topic-content">
+            <h2>AGI et Ville Intelligente</h2>
+            <div class="imageTopic" id="imageTopic3"></div> 
+            <div id="resultatsTopic3"></div>
+            <button class="regenerate-content" data-topic="AGI_et_Ville_Intelligente">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_Ville_Intelligente">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_Ville_Intelligente">Enregistrer</button>
+        </section>
+
+        <section id="topic4" class="topic-content">
+            <h2>AGI et Entreprises Locales</h2>
+            <div class="imageTopic" id="imageTopic4"></div> 
+            <div id="resultatsTopic4"></div>
+            <button class="regenerate-content" data-topic="AGI_et_Entreprises_Locales">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_Entreprises_Locales">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_Entreprises_Locales">Enregistrer</button>
+        </section>
+        <section id="topic5" class="topic-content">
+            <h2>AGI et le Cinema</h2>
+            <div class="imageTopic" id="imageTopic5"></div> 
+            <div id="resultatsTopic5"></div>
+            <button class="regenerate-content" data-topic="AGI_et_cinema">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_cinema">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_cinema">Enregistrer</button>
+        </section>
+        <section id="topic6" class="topic-content">
+            <h2>AGI et les jeux Video</h2>
+            <div class="imageTopic" id="imageTopic6"></div> 
+            <div id="resultatsTopic6"></div>
+            <button class="regenerate-content" data-topic="AGI_et_jeux_video">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_jeux_video">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_jeux_video">Enregistrer</button>
+        </section>
+        <section id="topic7" class="topic-content">
+            <h2>AGI et l'architecture</h2>
+            <div class="imageTopic" id="imageTopic7"></div> 
+            <div id="resultatsTopic7"></div>
+            <button class="regenerate-content" data-topic="AGI_et_Architecture">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_Architecture">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_Architecture">Enregistrer</button>
+        </section>
+        <section id="topic8" class="topic-content">
+            <h2>AGI et l'archeologie</h2>
+            <div class="imageTopic" id="imageTopic8"></div> 
+            <div id="resultatsTopic8"></div>
+            <button class="regenerate-content" data-topic="AGI_et_Archeologie">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_Archeologie">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_Archeologie">Enregistrer</button>
+        </section>
+        <section id="topic9" class="topic-content">
+            <h2>AGI et les mathématique</h2>
+            <div class="imageTopic" id="imageTopic9"></div> 
+            <div id="resultatsTopic9"></div>
+            <button class="regenerate-content" data-topic="AGI_et_mathematique">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_mathematique">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_mathematique">Enregistrer</button>
+        </section>
+        <section id="topic10" class="topic-content">
+            <h2>AGI et la metaphyque</h2>
+            <div class="imageTopic" id="imageTopic10"></div> 
+            <div id="resultatsTopic10"></div>
+            <button class="regenerate-content" data-topic="AGI_et_metaphysique">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_metaphysique">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_metaphysique">Enregistrer</button>
+        </section>
+        <section id="topic11" class="topic-content">
+            <h2>AGI et la physique quantique</h2>
+            <div class="imageTopic" id="imageTopic11"></div> 
+            <div id="resultatsTopic11"></div>
+            <button class="regenerate-content" data-topic="AGI_et_physique_quantique">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_physique_quantique">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_physique_quantique">Enregistrer</button>
+        </section>
+        <section id="topic12" class="topic-content">
+            <h2>AGI et l'économie et la finance</h2>
+            <div class="imageTopic" id="imageTopic12"></div> 
+            <div id="resultatsTopic12"></div>
+            <button class="regenerate-content" data-topic="AGI_et_economie_finance">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_economie_finance">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_economie_finance">Enregistrer</button>
+        </section>
+        <section id="topic13" class="topic-content">
+            <h2>AGI et Astronomie</h2>
+            <div class="imageTopic" id="imageTopic13"></div> 
+            <div id="resultatsTopic13"></div>
+            <button class="regenerate-content" data-topic="AGI_et_astronomie">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_astronomie">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_astronomie">Enregistrer</button>
+        </section>
+        <section id="topic14" class="topic-content">
+            <h2>AGI et Geopolitique</h2>
+            <div class="imageTopic" id="imageTopic14"></div> 
+            <div id="resultatsTopic14"></div>
+            <button class="regenerate-content" data-topic="AGI_et_geopolitique">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_geopolitique">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_geopolitique">Enregistrer</button>
+        </section>
+        <section id="topic15" class="topic-content">
+            <h2>AGI et crypto Game</h2>
+            <div class="imageTopic" id="imageTopic15"></div> 
+            <div id="resultatsTopic15"></div>
+            <button class="regenerate-content" data-topic="AGI_et_crypto_game">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_crypto_game">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_crypto_game">Enregistrer</button>
+        </section>
+        <section id="topic16" class="topic-content">
+            <h2>AGI et industrie</h2>
+            <div class="imageTopic" id="imageTopic16"></div> 
+            <div id="resultatsTopic16"></div>
+            <button class="regenerate-content" data-topic="AGI_et_industrie">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_industrie">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_industrie">Enregistrer</button>
+        </section>
+        <section id="topic17" class="topic-content">
+            <h2>AGI et Agriculture</h2>
+            <div class="imageTopic" id="imageTopic17"></div> 
+            <div id="resultatsTopic17"></div>
+            <button class="regenerate-content" data-topic="AGI_et_agriculture_du_future">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="AGI_et_agriculture_du_future">Régénérer l'image</button>
+            <button class="save-content" data-topic="AGI_et_agriculture_du_future">Enregistrer</button>
+        </section>
+        <section id="topic18" class="topic-content">
+            <h2> salon de beauté</h2>
+            <div class="imageTopic" id="imageTopic18"></div> 
+            <div id="resultatsTopic18"></div>
+            <button class="regenerate-content" data-topic="Newletter_salon-de-beaute">Régénérer le contenu</button>
+            <button class="regenerate-image" data-topic="Newletter_salon-de-beaute">Régénérer l'image</button>
+            <button class="save-content" data-topic="Newletter_salon-de-beaute">Enregistrer</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>© [Année] - Blog AGI Caen</p>
+    </footer>
+
+    <script src="btn-blog.js"></script>
+</body>
+</html>

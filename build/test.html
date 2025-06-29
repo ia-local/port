@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maquette d'Interface Graphique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Définition de la police Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Un gris-bleu clair pour le fond */
+            color: #334155; /* Couleur de texte par défaut */
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e3a8a; /* Bleu foncé */
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #3b82f6; /* Bordure bleue */
+            padding-bottom: 1rem;
+        }
+        p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            color: #475569; /* Gris moyen */
+        }
+        .image-container {
+            margin-top: 2rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px; /* Hauteur minimale pour le chargement */
+        }
+        .loading-message {
+            font-size: 1.2rem;
+            color: #64748b; /* Gris-bleu */
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        .description-box {
+            background-color: #e0f2fe; /* Bleu très clair */
+            border-left: 5px solid #3b82f6; /* Bordure bleue */
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+            border-radius: 8px;
+            color: #1e40af; /* Texte bleu foncé */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Maquette d'Interface Graphique pour votre Canevas</h1>
+        <p>
+            Voici une <span style="font-weight: bold; color: #1e3a8a;">maquette visuelle</span> de ce que pourrait être notre interface de développement interactive,
+            générée spécifiquement pour le canevas. Cette image au format <span style="font-weight: bold; color: #059669;">WebP</span>
+            illustre les éléments clés que nous avons discutés, optimisée pour une <span style="font-weight: bold; color: #059669;">visualisation claire</span>.
+        </p>
+
+        <div class="image-container" id="image-placeholder">
+            <p class="loading-message">Chargement de la maquette de l'interface...</p>
+        </div>
+
+        <div class="description-box">
+            <h2 class="text-xl font-semibold mb-2">Éléments Clés de la Maquette :</h2>
+            <ul class="list-disc pl-5 text-gray-700">
+                <li>Zone d'édition de code / prévisualisation sur la droite.</li>
+                <li>Zone de conversation / chat sur la gauche.</li>
+                <li>Boutons d'action : <span style="font-weight: bold;">Enregistrer, Version Précédente/Suivante, Partager</span>.</li>
+                <li>Options de visualisation : <span style="font-weight: bold;">Code, Aperçu HTML/CSS, Canevas SVG</span>.</li>
+                <li>Un bouton conceptuel pour la <span style="font-weight: bold;">Console</span>.</li>
+                <li>Design moderne, épuré, avec des coins arrondis et une palette de couleurs douce.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const imagePlaceholder = document.getElementById('image-placeholder');
+            const apiKey = ""; // La clé API sera fournie par l'environnement Canvas
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+
+            try {
+                const payload = {
+                    instances: {
+                        prompt: "A sleek, modern graphical user interface mockup for a web development conversation canvas. It should feature a split-panel layout: a chat/conversation area on the left and a code editor/preview area on the right. The code editor should resemble a minimalist IDE with line numbers. Include buttons for 'Save', 'Previous Version', 'Next Version', 'Share', and 'Console'. Also, add toggle buttons for 'Code View', 'HTML/CSS Preview', and 'SVG Canvas'. The design should be clean, professional, with rounded corners and a subtle color palette, hinting at a collaborative development environment. Make it look like a web application running in a browser window."
+                    },
+                    parameters: {
+                        "sampleCount": 1
+                    }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                    const imageUrl = `data:image/webp;base64,${result.predictions[0].bytesBase64Encoded}`;
+                    const imgElement = document.createElement('img');
+                    imgElement.src = imageUrl;
+                    imgElement.alt = "Maquette d'interface graphique pour canevas de développement";
+                    imgElement.onerror = () => {
+                        imagePlaceholder.innerHTML = '<p class="text-red-500">Erreur de chargement de l\'image. Veuillez réessayer.</p>';
+                    };
+                    imagePlaceholder.innerHTML = ''; // Supprime le message de chargement
+                    imagePlaceholder.appendChild(imgElement);
+                } else {
+                    imagePlaceholder.innerHTML = '<p class="text-red-500">Impossible de générer l\'image. Réponse inattendue de l\'IA.</p>';
+                }
+            } catch (error) {
+                console.error('Erreur lors de la génération de l\'image :', error);
+                imagePlaceholder.innerHTML = '<p class="text-red-500">Une erreur est survenue lors de la communication avec le service de génération d\'images.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

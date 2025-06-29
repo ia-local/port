@@ -1,0 +1,66 @@
+[
+    {
+      "id": "cell_001",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "width": 10.0,
+      "height": 5.0,
+      "depth": 2.0,
+      "dimensions_data": {
+        "temperature": 25.5,
+        "category": "Alpha",
+        "timestamp": "2023-10-26T10:00:00Z"
+      },
+      "content": "Donnée primaire de la cellule 1. Cette cellule représente la région initiale de l'espace de données.",
+      "ai_response_cache": ""
+    },
+    {
+      "id": "cell_002",
+      "x": 12.0,
+      "y": 0.0,
+      "z": 0.0,
+      "width": 8.0,
+      "height": 4.0,
+      "depth": 1.5,
+      "dimensions_data": {
+        "temperature": 18.2,
+        "category": "Beta",
+        "timestamp": "2023-10-26T10:15:00Z"
+      },
+      "content": "Analyse du comportement des données dans la zone Beta. Des anomalies mineures ont été détectées ici.",
+      "ai_response_cache": ""
+    },
+    {
+      "id": "cell_003",
+      "x": 5.0,
+      "y": 7.0,
+      "z": 3.0,
+      "width": 15.0,
+      "height": 6.0,
+      "depth": 2.5,
+      "dimensions_data": {
+        "temperature": 30.1,
+        "category": "Gamma",
+        "timestamp": "2023-10-26T10:30:00Z"
+      },
+      "content": "Cette cellule agrège les données de haute densité. L'IA pourrait suggérer des tendances ou des corrélations ici.",
+      "ai_response_cache": ""
+    },
+    {
+      "id": "cell_004",
+      "x": 25.0,
+      "y": 15.0,
+      "z": 5.0,
+      "width": 7.0,
+      "height": 3.0,
+      "depth": 1.0,
+      "dimensions_data": {
+        "temperature": 22.0,
+        "category": "Alpha",
+        "timestamp": "2023-10-26T10:45:00Z"
+      },
+      "content": "Point de données isolé. La réactivité de l'IA pourrait être testée avec des requêtes spécifiques à cette cellule.",
+      "ai_response_cache": ""
+    }
+]

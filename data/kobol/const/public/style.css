@@ -1,0 +1,9 @@
+body {
+    margin: 0;
+    overflow: hidden; /* Empêche les barres de défilement */
+}
+
+canvas {
+    display: block;
+    border: 1px solid rgb(42, 2, 74); /* Ajout de la bordure */
+}

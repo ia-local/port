@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutoriel Canvas IA - Unifié</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Couleur de fond Bootstrap light */
+            color: #343a40; /* Couleur de texte Bootstrap dark */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container-fluid {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #007bff; /* Couleur primaire Bootstrap */
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0;
+        }
+
+        h2 {
+            color: #343a40;
+            font-weight: 600;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            color: #343a40;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .card {
+            border-radius: 0.75rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 20px;
+        }
+
+        /* Styles pour les sections de chat */
+        .chat-section-intro {
+            background-color: #e9f5ff;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            text-align: center;
+        }
+        .chat-section-intro h3 {
+            color: #0056b3;
+            margin-bottom: 1rem;
+        }
+        .chat-section-intro .btn {
+            margin: 0.5rem;
+        }
+
+        .chat-log {
+            background-color: #ffffff;
+            border: 1px solid #cce5ff;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .chat-log div {
+            margin-bottom: 0.5rem;
+        }
+        .chat-log strong {
+            color: #007bff;
+        }
+        .chat-log .ai-response {
+            background-color: #e0f2fe;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.2rem;
+            border-left: 3px solid #2563eb;
+        }
+        .input-area {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .input-area input[type="text"], .input-area textarea {
+            flex-grow: 1;
+            padding: 0.75rem;
+            border: 1px solid #9ca3af;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .input-area button {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .input-area button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+        .loading-chat-indicator {
+            text-align: center;
+            margin-top: 1rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* Styles pour le canevas Three.js */
+        #threeJsCanvas {
+            border: 2px solid #007bff;
+            display: block;
+            background-color: #e9ecef;
+            cursor: grab;
+            border-radius: 0.5rem;
+            width: 100%;
+            height: 500px;
+            max-width: 100%;
+        }
+
+        /* Chart.js n'est plus utilisé, mais gardons les styles si jamais vous le réintégrez */
+        #chartJsCanvas {
+            border: 1px solid #ced4da;
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            padding: 15px;
+            width: 100%;
+            height: 300px;
+        }
+
+        .btn-primary {
+            border-radius: 0.5rem;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            font-size: 0.9em;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+        }
+
+        /* Message box for alerts */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        .message-box button {
+            margin-top: 15px;
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="display-4">Tutoriel : Optimisation des Canevas avec Gemini</h1>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <section class="card p-4 mb-4">
+                    <h2>Introduction au Tutoriel</h2>
+                    <p>
+                        Bienvenue dans ce tutoriel interactif. Ici, vous trouverez les explications détaillées et les snippets de code pour construire votre application de type Canva.
+                    </p>
+                    <p>
+                        Explorez les différentes sections pour comprendre comment intégrer des agents IA (Frontend, Backend, API REST) et comment utiliser l'IA pour générer des commandes CLI pour la gestion de votre projet.
+                    </p>
+                </section>
+
+                <section class="chat-section-intro">
+                    <h3>Interagissez avec les Agents IA</h3>
+                    <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#backendAgentModal">Agent Backend</button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#frontendAgentModal">Agent Frontend</button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#apiRestAgentModal">Agent API REST</button>
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#cliAgentModal">Générateur CLI</button>
+                        <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#crudAgentModal">Opérations CRUD</button>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-6">
+                <section class="card p-4">
+                    <h2 class="text-center mb-4">Visualisation 3D (Three.js)</h2>
+                    <canvas id="threeJsCanvas" role="img" aria-label="Zone de visualisation 3D interactive"></canvas>
+                    <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+                        <button id="load3DDataButton" class="btn btn-primary">Charger Objets 3D</button>
+                        <button id="clear3DCanvasButton" class="btn btn-danger">Effacer 3D</button>
+                        <button id="generateDescriptionButton" class="btn btn-info">Générer Description IA</button>
+                    </div>
+                </section>
+
+                <section class="card p-4 mt-4">
+                    <h2 class="text-center mb-4">Données des Objets 3D</h2>
+                    <pre id="dataDisplay" class="bg-light p-3 rounded" style="max-height: 200px; overflow-y: auto;"></pre>
+                </section>
+
+                <section class="card p-4 mt-4">
+                    <h2 class="text-center mb-4">Description Générée par IA</h2>
+                    <div id="aiDescription" class="bg-light p-3 rounded" style="min-height: 100px;">
+                        <p class="text-muted">Cliquez sur "Générer Description IA" pour obtenir une analyse des objets 3D.</p>
+                    </div>
+                    <div id="loadingIndicator" class="d-none text-center mt-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <p class="text-primary mt-2">Génération de la description...</p>
+                    </div>
+                </section>
+
+                <section class="card p-4 mt-4 bg-warning-subtle">
+                    <h2 class="text-warning text-center mb-4">Générer du Dessin sur Canevas avec l'IA ✨</h2>
+                    <div class="input-area mb-3">
+                        <textarea id="aiDrawingPromptTextarea" class="form-control" rows="3" placeholder="Ex: Dessine un cercle bleu au centre et un petit carré rouge en haut à gauche."></textarea>
+                        <button id="generateAndDrawButton" class="btn btn-warning mt-2">Générer et Dessiner ✨</button>
+                    </div>
+                    <div class="loading-chat-indicator d-none" id="drawingLoadingIndicator">Génération du code de dessin...</div>
+                    <div class="bg-light p-3 rounded mt-3" id="aiGeneratedCodeArea" style="min-height: 100px; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 0.9em;">
+                        <p class="text-muted">Le code JavaScript généré par l'IA apparaîtra ici.</p>
+                    </div>
+                    <div class="alert alert-info mt-3" role="alert" id="drawingMessageArea" style="min-height: auto;">
+                        </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Développé avec Three.js, Bootstrap et Chart.js. &copy; 2025 Application de Canevas Optimisé.</p>
+    </footer>
+
+    <div id="messageBox" class="message-box">
+        <p id="messageText"></p>
+        <button id="messageBoxCloseButton">OK</button>
+    </div>
+
+    <div class="modal fade" id="backendAgentModal" tabindex="-1" aria-labelledby="backendAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="backendAgentModalLabel">Agent Backend</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chat-backend-log" class="chat-log"></div>
+                    <div class="input-area mt-3">
+                        <textarea id="user-input-backend" class="form-control" rows="3" placeholder="Ex: Créer une API REST avec Node.js pour gérer des utilisateurs..."></textarea>
+                        <button class="btn btn-primary mt-2 send-button" data-context="backend">Envoyer</button>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-backend">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="frontendAgentModal" tabindex="-1" aria-labelledby="frontendAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="frontendAgentModalLabel">Agent Frontend</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chat-frontend-log" class="chat-log"></div>
+                    <div class="input-area mt-3">
+                        <textarea id="user-input-frontend" class="form-control" rows="3" placeholder="Ex: Créer une page web avec un formulaire de contact en HTML, CSS et JS..."></textarea>
+                        <button class="btn btn-primary mt-2 send-button" data-context="frontend">Envoyer</button>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-frontend">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="apiRestAgentModal" tabindex="-1" aria-labelledby="apiRestAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="apiRestAgentModalLabel">Agent API REST</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chat-api_rest-log" class="chat-log"></div>
+                    <div class="input-area mt-3">
+                        <textarea id="user-input-api_rest" class="form-control" rows="3" placeholder="Ex: Décris les endpoints pour une API de gestion de produits..."></textarea>
+                        <button class="btn btn-primary mt-2 send-button" data-context="api_rest">Envoyer</button>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-api_rest">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cliAgentModal" tabindex="-1" aria-labelledby="cliAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cliAgentModalLabel">Générateur de Commandes CLI</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chat-cli-log" class="chat-log"></div>
+                    <div class="input-area mt-3">
+                        <textarea id="user-input-cli" class="form-control" rows="3" placeholder="Ex: Comment créer un nouveau dossier 'components' dans src/js ?"></textarea>
+                        <button class="btn btn-info mt-2 send-button" data-context="cli_command">Générer Commande</button>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-cli_command">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="crudAgentModal" tabindex="-1" aria-labelledby="crudAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crudAgentModalLabel">Opérations CRUD CLI (via IA)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center text-muted mb-4">Décrivez l'élément à manipuler, puis choisissez l'opération.</p>
+                    <div id="chat-crud-log" class="chat-log mb-3"></div>
+                    <div class="input-area d-flex flex-column flex-md-row gap-2">
+                        <textarea id="crud-input" class="form-control flex-grow-1" rows="2" placeholder="Ex: un dossier 'utils', le fichier 'main.js' en 'app.js'..."></textarea>
+                        <div class="d-flex flex-column flex-md-row gap-2">
+                            <button class="btn btn-success send-crud-button" data-context="create">CREATE</button>
+                            <button class="btn btn-warning send-crud-button" data-context="rename">RENAME</button>
+                            <button class="btn btn-primary send-crud-button" data-context="update">UPDATE</button>
+                            <button class="btn btn-danger send-crud-button" data-context="delete">DELETE</button>
+                        </div>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-crud">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fonction utilitaire pour afficher des messages personnalisés au lieu d'alert()
+            function showMessageBox(message) {
+                const messageBox = document.getElementById('messageBox');
+                const messageText = document.getElementById('messageText');
+                const messageBoxCloseButton = document.getElementById('messageBoxCloseButton');
+
+                messageText.textContent = message;
+                messageBox.style.display = 'block';
+
+                messageBoxCloseButton.onclick = () => {
+                    messageBox.style.display = 'none';
+                };
+            }
+
+            // --- Three.js Setup ---
+            let scene, camera, renderer, controls;
+            const threeJsCanvas = document.getElementById('threeJsCanvas');
+            const dataDisplay = document.getElementById('dataDisplay');
+            const load3DDataButton = document.getElementById('load3DDataButton');
+            const clear3DCanvasButton = document.getElementById('clear3DCanvasButton');
+            const generateDescriptionButton = document.getElementById('generateDescriptionButton');
+            const aiDescriptionDiv = document.getElementById('aiDescription');
+            const loadingIndicator = document.getElementById('loadingIndicator'); // Pour la description IA
+
+            let current3DObjects = []; // Pour garder une trace des objets ajoutés à la scène
+
+            function initThreeJS() {
+                // Scène
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0xf0f0f0); // Couleur de fond claire
+
+                // Caméra
+                camera = new THREE.PerspectiveCamera(75, threeJsCanvas.clientWidth / threeJsCanvas.clientHeight, 0.1, 1000);
+                camera.position.set(5, 5, 5); // Position initiale de la caméra
+                camera.lookAt(0, 0, 0); // Regarder le centre de la scène
+
+                // Rendu
+                renderer = new THREE.WebGLRenderer({ canvas: threeJsCanvas, antialias: true });
+                renderer.setSize(threeJsCanvas.clientWidth, threeJsCanvas.clientHeight);
+                renderer.setPixelRatio(window.devicePixelRatio); // Améliore la qualité sur les écrans haute résolution
+
+                // Contrôles de la caméra (OrbitControls)
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true; // Pour un mouvement plus fluide
+                controls.dampingFactor = 0.05;
+                controls.screenSpacePanning = false; // Désactive le panning sur l'écran
+                controls.minDistance = 2; // Distance minimale de zoom
+                controls.maxDistance = 50; // Distance maximale de zoom
+
+                // Lumières
+                const ambientLight = new THREE.AmbientLight(0x404040); // Lumière ambiante douce
+                scene.add(ambientLight);
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // Lumière directionnelle
+                directionalLight.position.set(1, 1, 1).normalize();
+                scene.add(directionalLight);
+
+                // Grille d'aide (optionnel)
+                const gridHelper = new THREE.GridHelper(10, 10);
+                scene.add(gridHelper);
+
+                // Axes d'aide (optionnel)
+                const axesHelper = new THREE.AxesHelper(5);
+                scene.add(axesHelper);
+
+                // Lancer la boucle d'animation
+                animate();
+            }
+
+            // Boucle d'animation Three.js
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update(); // Mettre à jour les contrôles de la caméra
+                renderer.render(scene, camera);
+            }
+
+            // Gérer le redimensionnement de la fenêtre
+            function onWindowResize() {
+                camera.aspect = threeJsCanvas.clientWidth / threeJsCanvas.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(threeJsCanvas.clientWidth, threeJsCanvas.clientHeight);
+            }
+            window.addEventListener('resize', onWindowResize);
+
+            /**
+             * Structure de la base de données JSON (simulée ici pour l'exemple).
+             * Ces données seront utilisées pour créer des objets 3D dans Three.js.
+             * En production, ces données seraient chargées via une API.
+             */
+            const simulated3DData = [
+                {
+                    "id": "sphere-1",
+                    "type": "sphere",
+                    "position": {"x": 0, "y": 0, "z": 0},
+                    "radius": 1,
+                    "color": "#FF0000",
+                    "label": "Sphère Centrale",
+                    "metadata": {"category": "base", "material": "metal"}
+                },
+                {
+                    "id": "cube-1",
+                    "type": "box",
+                    "position": {"x": 3, "y": 1, "z": -2},
+                    "size": {"x": 1.5, "y": 1.5, "z": 1.5},
+                    "color": "#00FF00",
+                    "label": "Cube Vert",
+                    "metadata": {"category": "structure", "material": "wood"}
+                },
+                {
+                    "id": "cone-1",
+                    "type": "cone",
+                    "position": {"x": -4, "y": -1, "z": 3},
+                    "radius": 1,
+                    "height": 2,
+                    "color": "#0000FF",
+                    "label": "Cône Bleu",
+                    "metadata": {"category": "decoration", "material": "plastic"}
+                },
+                {
+                    "id": "cylinder-1",
+                    "type": "cylinder",
+                    "position": {"x": 2, "y": -2, "z": -4},
+                    "radius": 0.8,
+                    "height": 3,
+                    "color": "#FFFF00",
+                    "label": "Cylindre Jaune",
+                    "metadata": {"category": "utility", "material": "glass"}
+                },
+                {
+                    "id": "sphere-2",
+                    "type": "sphere",
+                    "position": {"x": -2, "y": 3, "z": 1},
+                    "radius": 0.7,
+                    "color": "#FF00FF",
+                    "label": "Petite Sphère Magenta",
+                    "metadata": {"category": "base", "material": "rubber"}
+                }
+            ];
+
+            /**
+             * Crée un objet 3D basé sur les données JSON.
+             * @param {Object} item - L'objet de données JSON.
+             * @returns {THREE.Mesh|null} Le mesh Three.js créé, ou null si le type est inconnu.
+             */
+            function create3DObject(item) {
+                let geometry;
+                let material = new THREE.MeshPhongMaterial({ color: new THREE.Color(item.color || '#cccccc') }); // Matériau avec Phong pour les lumières
+
+                switch (item.type) {
+                    case 'sphere':
+                        geometry = new THREE.SphereGeometry(item.radius || 1, 32, 32);
+                        break;
+                    case 'box':
+                        geometry = new THREE.BoxGeometry(item.size.x || 1, item.size.y || 1, item.size.z || 1);
+                        break;
+                    case 'cone':
+                        geometry = new THREE.ConeGeometry(item.radius || 1, item.height || 2, 32);
+                        break;
+                    case 'cylinder':
+                        geometry = new THREE.CylinderGeometry(item.radius || 1, item.radius || 1, item.height || 2, 32);
+                        break;
+                    default:
+                        console.warn(`Type d'objet 3D inconnu: ${item.type}`);
+                        return null;
+                }
+
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(item.position.x || 0, item.position.y || 0, item.position.z || 0);
+                mesh.name = item.id; // Pour faciliter l'identification des objets
+                return mesh;
+            }
+
+            /**
+             * Charge les données 3D et les ajoute à la scène Three.js.
+             */
+            async function load3DData() {
+                clear3DCanvas(); // Efface la scène avant de charger de nouvelles données
+
+                // Simule une requête réseau avec un délai pour mieux visualiser le chargement
+                const data = await new Promise(resolve => setTimeout(() => resolve(simulated3DData), 500));
+
+                if (data && data.length > 0) {
+                    dataDisplay.textContent = JSON.stringify(data, null, 2); // Affiche les données JSON
+
+                    data.forEach(item => {
+                        const object3D = create3DObject(item);
+                        if (object3D) {
+                            scene.add(object3D);
+                            current3DObjects.push(object3D);
+                        }
+                    });
+                    showMessageBox("Objets 3D chargés avec succès !");
+                    // updateChart(data); // Appel à updateChart supprimé
+                } else {
+                    showMessageBox("Aucune donnée 3D à charger.");
+                }
+            }
+
+            /**
+             * Efface tous les objets de la scène Three.js.
+             */
+            function clear3DCanvas() {
+                current3DObjects.forEach(obj => {
+                    scene.remove(obj);
+                    // Libérer la mémoire des géométries et matériaux
+                    if (obj.geometry) obj.geometry.dispose();
+                    if (obj.material) obj.material.dispose();
+                });
+                current3DObjects = [];
+                dataDisplay.textContent = "Canevas 3D effacé.";
+                aiDescriptionDiv.innerHTML = '<p class="text-muted">Cliquez sur "Générer Description IA" pour obtenir une analyse des objets 3D.</p>';
+                // updateChart([]); // Appel à updateChart supprimé
+                showMessageBox("Canevas 3D effacé.");
+            }
+
+            // --- Chart.js Setup (Code Chart.js supprimé) ---
+            // let myChart;
+            // const chartJsCanvas = document.getElementById('chartJsCanvas');
+
+            // function initChart() { /* ... */ }
+            // function updateChart(data) { /* ... */ }
+
+            // --- LLM (Gemini Flash) Integration pour la description 3D ---
+            async function generateAIDescription() {
+                if (current3DObjects.length === 0) {
+                    showMessageBox("Veuillez d'abord charger des objets 3D pour générer une description.");
+                    return;
+                }
+
+                loadingIndicator.classList.remove('d-none'); // Afficher l'indicateur de chargement
+                aiDescriptionDiv.innerHTML = ''; // Effacer le contenu précédent
+
+                const objectSummaries = current3DObjects.map(obj => {
+                    const originalData = simulated3DData.find(d => d.id === obj.name);
+                    if (originalData) {
+                        return `Un ${originalData.type} de couleur ${originalData.color} nommé "${originalData.label}" à la position (${originalData.position.x}, ${originalData.position.y}, ${originalData.position.z}).`;
+                    } else {
+                        return `Un objet 3D de type ${obj.geometry.type} de couleur ${obj.material.color.getHexString()} à la position (${obj.position.x.toFixed(1)}, ${obj.position.y.toFixed(1)}, ${obj.position.z.toFixed(1)}).`;
+                    }
+                }).join('\n');
+
+                const prompt = `Décrivez la scène 3D suivante en mettant en évidence les objets présents et leurs caractéristiques principales. Soyez concis et descriptif. Voici la liste des objets :\n${objectSummaries}`;
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Laissez vide, Canvas fournira la clé API en runtime.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        aiDescriptionDiv.innerHTML = `<p>${text}</p>`;
+                    } else {
+                        aiDescriptionDiv.innerHTML = '<p class="text-danger">Erreur: Impossible de générer la description. Structure de réponse inattendue.</p>';
+                        console.error("Erreur de structure de réponse de l'API Gemini:", result);
+                    }
+                } catch (error) {
+                    aiDescriptionDiv.innerHTML = '<p class="text-danger">Erreur lors de l\'appel à l\'API Gemini.</p>';
+                    console.error("Erreur de l'API Gemini:", error);
+                } finally {
+                    loadingIndicator.classList.add('d-none'); // Cacher l'indicateur de chargement
+                }
+            }
+
+            // --- LLM (Gemini Flash) Integration pour le dessin sur canevas ---
+            const aiDrawingPromptTextarea = document.getElementById('aiDrawingPromptTextarea');
+            const generateAndDrawButton = document.getElementById('generateAndDrawButton');
+            const aiGeneratedCodeArea = document.getElementById('aiGeneratedCodeArea');
+            const drawingLoadingIndicator = document.getElementById('drawingLoadingIndicator');
+            const drawingMessageArea = document.getElementById('drawingMessageArea');
+
+            generateAndDrawButton.addEventListener('click', async () => {
+                const drawingPrompt = aiDrawingPromptTextarea.value.trim();
+
+                if (!drawingPrompt) {
+                    drawingMessageArea.innerHTML = '<p class="text-danger">Veuillez décrire ce que vous voulez dessiner.</p>';
+                    return;
+                }
+
+                drawingLoadingIndicator.classList.remove('d-none');
+                aiGeneratedCodeArea.innerHTML = '';
+                drawingMessageArea.innerHTML = '';
+
+                try {
+                    const prompt = `Génère uniquement le code JavaScript pour dessiner sur un élément canvas 2D. Utilise la variable 'ctx' pour le contexte de dessin et 'canvas' pour l'élément canvas. Efface toujours le canevas au début du code avec 'ctx.clearRect(0, 0, canvas.width, canvas.height);'. Ne retourne PAS de balises <script>, de listeners DOMContentLoaded, ou de fonctions. Concentre-toi uniquement sur les instructions de dessin. Voici la description du dessin : "${drawingPrompt}"`;
+                    
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; // L'API key est gérée par l'environnement Canvas
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        
+                        let generatedCode = result.candidates[0].content.parts[0].text;
+                        generatedCode = generatedCode.replace(/```javascript\n|```/g, '').trim();
+
+                        aiGeneratedCodeArea.innerHTML = `<pre>${generatedCode}</pre>`;
+                        drawingMessageArea.innerHTML = '<p class="text-success">Code généré avec succès ! Exécution sur le canevas...</p>';
+                        
+                        // Exécuter le code généré sur le canevas Three.js
+                        try {
+                            const temp2dCanvas = document.createElement('canvas');
+                            temp2dCanvas.width = threeJsCanvas.width;
+                            temp2dCanvas.height = threeJsCanvas.height;
+                            const temp2dCtx = temp2dCanvas.getContext('2d');
+
+                            aiGeneratedCodeArea.innerHTML = '';
+                            drawingMessageArea.innerHTML = '';
+                            drawingMessageArea.appendChild(temp2dCanvas);
+
+                            new Function('ctx', 'canvas', generatedCode)(temp2dCtx, temp2dCanvas);
+                            drawingMessageArea.innerHTML += '<p class="text-success mt-2">Dessin 2D généré et affiché ci-dessus !</p>';
+
+
+                        } catch (execError) {
+                            drawingMessageArea.innerHTML = `<p class="text-danger">Erreur lors de l'exécution du code généré : ${execError.message}</p>`;
+                            console.error("Erreur d'exécution du code Canvas:", execError);
+                        }
+
+                    } else {
+                        drawingMessageArea.innerHTML = '<p class="text-danger">Impossible de générer le code de dessin. Réponse inattendue de l\'IA.</p>';
+                        console.error("Réponse inattendue de l'IA:", result);
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de l'appel à l'API Gemini pour le dessin:", error);
+                    let errorMessage = `Erreur lors de la génération du dessin : ${error.message}. `;
+                    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+                        errorMessage += "Vérifiez votre connexion internet ou la configuration de l'API Gemini.";
+                    }
+                    drawingMessageArea.innerHTML = `<p class="text-danger">${errorMessage}</p>`;
+                } finally {
+                    drawingLoadingIndicator.classList.add('d-none');
+                }
+            });
+
+
+            // --- Chat et CLI IA ---
+            // Mapping des éléments DOM pour chaque contexte de chat
+            const chatLogs = {
+                backend: document.getElementById('chat-backend-log'),
+                frontend: document.getElementById('chat-frontend-log'),
+                api_rest: document.getElementById('chat-api_rest-log'),
+                cli_command: document.getElementById('chat-cli-log'),
+                crud: document.getElementById('chat-crud-log')
+            };
+
+            const inputFields = {
+                backend: document.getElementById('user-input-backend'),
+                frontend: document.getElementById('user-input-frontend'),
+                api_rest: document.getElementById('user-input-api_rest'),
+                cli_command: document.getElementById('user-input-cli'),
+                crud: document.getElementById('crud-input')
+            };
+
+            const loadingIndicators = {
+                backend: document.getElementById('loading-backend'),
+                frontend: document.getElementById('loading-frontend'),
+                api_rest: document.getElementById('loading-api_rest'),
+                cli_command: document.getElementById('loading-cli_command'),
+                crud: document.getElementById('loading-crud')
+            };
+
+            const sendButtons = document.querySelectorAll('.send-button');
+            const sendCrudButtons = document.querySelectorAll('.send-crud-button');
+
+            // Fonction pour ajouter un message au log de chat
+            function appendMessage(context, sender, message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.innerHTML = `<strong>${sender}:</strong> <span class="ai-response">${message}</span>`;
+                if (chatLogs[context]) {
+                    chatLogs[context].appendChild(messageDiv);
+                    chatLogs[context].scrollTop = chatLogs[context].scrollHeight;
+                } else {
+                    console.error(`Erreur: L'élément de log de chat pour le contexte '${context}' est introuvable.`);
+                }
+            }
+
+            // Fonction pour envoyer un message à l'agent IA
+            async function sendMessage(context, messageText) {
+                const message = messageText || inputFields[context].value;
+                if (!message.trim()) {
+                    showMessageBox("Veuillez entrer une requête.");
+                    return;
+                }
+
+                appendMessage(context, 'Vous', message);
+                if (inputFields[context]) {
+                    inputFields[context].value = '';
+                }
+
+                loadingIndicators[context].classList.remove('d-none');
+
+                try {
+                    let apiUrl = `http://localhost:5007/chat/${context}`;
+                    let payload = { message: message };
+
+                    if (context === 'cli_command') {
+                        apiUrl = 'http://localhost:5007/cli-command';
+                        payload = { command: message };
+                    } 
+                    else if (['create', 'rename', 'update', 'delete'].includes(context)) {
+                        apiUrl = `http://localhost:5007/${context}`;
+                        payload = { message: message };
+                    }
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    if (data.response) {
+                        appendMessage(context, 'IA', data.response);
+                    } else {
+                        appendMessage(context, 'IA', 'Aucune réponse valide de l\'IA.');
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la communication avec l\'IA :', error);
+                    appendMessage(context, 'IA', `Erreur de communication : ${error.message}.`);
+                } finally {
+                    loadingIndicators[context].classList.add('d-none');
+                }
+            }
+
+            // Écouteurs d'événements pour les boutons d'envoi (agents)
+            sendButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const context = button.dataset.context;
+                    sendMessage(context);
+                });
+            });
+
+            // Écouteurs d'événements pour les boutons CRUD
+            sendCrudButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const context = button.dataset.context;
+                    const message = inputFields.crud.value;
+                    sendMessage(context, message);
+                });
+            });
+
+            // Gérer la touche "Entrée" dans les champs de saisie des modales
+            Object.values(inputFields).forEach(input => {
+                if (input) {
+                    input.addEventListener('keypress', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault(); 
+                            const context = event.target.id.replace('user-input-', '').replace('-input', '');
+                            if (context === 'crud') {
+                                showMessageBox("Veuillez cliquer sur un bouton CREATE/RENAME/UPDATE/DELETE pour envoyer la commande.");
+                            } else {
+                                sendMessage(context);
+                            }
+                        }
+                    });
+                }
+            });
+
+            // --- Initialisation et Écouteurs d'événements pour Three.js et Chart.js ---
+            initThreeJS(); // Initialiser la scène Three.js
+            // initChart(); // Appel à initChart supprimé
+
+            load3DDataButton.addEventListener('click', load3DData);
+            clear3DCanvasButton.addEventListener('click', clear3DCanvas);
+            generateDescriptionButton.addEventListener('click', generateAIDescription);
+        });
+    </script>
+</body>
+</html>
+

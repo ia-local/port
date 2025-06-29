@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Canevas Interactif Optimisé avec CDN et Shaders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles personnalisés pour le canevas et l'interface */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Couleur de fond Bootstrap light */
+            color: #343a40; /* Couleur de texte Bootstrap dark */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container-fluid {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #007bff; /* Couleur primaire Bootstrap */
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #343a40;
+            font-weight: 600;
+        }
+
+        .card {
+            border-radius: 0.75rem; /* Coins arrondis Bootstrap */
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 20px;
+        }
+
+        #threeJsCanvas {
+            border: 2px solid #007bff;
+            display: block;
+            background-color: #e9ecef;
+            cursor: grab; /* Indique la possibilité de glisser */
+            border-radius: 0.5rem;
+            width: 100%; /* Rendre le canevas responsif */
+            height: 500px; /* Hauteur fixe pour le canevas 3D */
+            max-width: 100%; /* Assurer qu'il ne déborde pas */
+        }
+
+        .btn-primary {
+            border-radius: 0.5rem;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: auto; /* Pousse le footer en bas */
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            font-size: 0.9em;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+        }
+
+        /* Message box for alerts */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            border-radius: 8px;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
+        .message-box button {
+            margin-top: 15px;
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="display-4">Application de Canevas 3D Interactive</h1>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <section class="card p-4" aria-labelledby="threejs-section-title">
+                    <h2 id="threejs-section-title" class="card-title text-center mb-4">Visualisation 3D (Three.js)</h2>
+                    <canvas id="threeJsCanvas" role="img" aria-label="Zone de visualisation 3D interactive"></canvas>
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <button id="load3DDataButton" class="btn btn-primary">Charger Objets 3D</button>
+                        <button id="clear3DCanvasButton" class="btn btn-danger">Effacer 3D</button>
+                        <button id="generateDescriptionButton" class="btn btn-info">Générer Description IA</button>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-4">
+                <section class="card p-4" aria-labelledby="data-display-section-title">
+                    <h2 id="data-display-section-title" class="card-title text-center mb-4">Données des Objets 3D</h2>
+                    <pre id="dataDisplay" class="bg-light p-3 rounded" style="max-height: 300px; overflow-y: auto;"></pre>
+                </section>
+                <section class="card p-4" aria-labelledby="ai-description-section-title">
+                    <h2 id="ai-description-section-title" class="card-title text-center mb-4">Description Générée par IA</h2>
+                    <div id="aiDescription" class="bg-light p-3 rounded" style="min-height: 100px;">
+                        <p class="text-muted">Cliquez sur "Générer Description IA" pour obtenir une analyse des objets 3D.</p>
+                    </div>
+                    <div id="loadingIndicator" class="d-none text-center mt-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <p class="text-primary mt-2">Génération de la description...</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Développé avec Three.js, Bootstrap. &copy; 2025 Application de Canevas Optimisé.</p>
+    </footer>
+
+    <div id="messageBox" class="message-box">
+        <p id="messageText"></p>
+        <button id="messageBoxCloseButton">OK</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // Fonction utilitaire pour afficher des messages personnalisés au lieu d'alert()
+        function showMessageBox(message) {
+            const messageBox = document.getElementById('messageBox');
+            const messageText = document.getElementById('messageText');
+            const messageBoxCloseButton = document.getElementById('messageBoxCloseButton');
+
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+
+            messageBoxCloseButton.onclick = () => {
+                messageBox.style.display = 'none';
+            };
+        }
+
+        /**
+         * Structure de la base de données JSON (simulée ici pour l'exemple).
+         * Ces données seront utilisées pour créer des objets 3D dans Three.js.
+         * Ajout de types pour démontrer les notions de vertex et de segment.
+         * 'custom-triangle' utilisera BufferGeometry pour définir des vertices.
+         * 'line-segment' dessinera des segments de ligne.
+         * 'shader-object' utilisera un ShaderMaterial pour un rendu personnalisé.
+         */
+        const simulated3DData = [
+            {
+                "id": "sphere-1",
+                "type": "sphere",
+                "position": {"x": 0, "y": 0, "z": 0},
+                "radius": 1,
+                "color": "#FF0000",
+                "label": "Sphère Centrale",
+                "metadata": {"category": "base", "material": "metal"}
+            },
+            {
+                "id": "cube-1",
+                "type": "box",
+                "position": {"x": 3, "y": 1, "z": -2},
+                "size": {"x": 1.5, "y": 1.5, "z": 1.5},
+                "color": "#00FF00",
+                "label": "Cube Vert",
+                "metadata": {"category": "structure", "material": "wood"}
+            },
+            {
+                "id": "cone-1",
+                "type": "cone",
+                "position": {"x": -4, "y": -1, "z": 3},
+                "radius": 1,
+                "height": 2,
+                "color": "#0000FF",
+                "label": "Cône Bleu",
+                "metadata": {"category": "decoration", "material": "plastic"}
+            },
+            {
+                "id": "line-segment-1",
+                "type": "line-segment",
+                "points": [
+                    {"x": -5, "y": 5, "z": 0},
+                    {"x": 5, "y": 5, "z": 0},
+                    {"x": 5, "y": -5, "z": 0},
+                    {"x": -5, "y": -5, "z": 0},
+                    {"x": -5, "y": 5, "z": 0} // Ferme le carré
+                ],
+                "color": "#FFA500",
+                "thickness": 3,
+                "label": "Carré de segments",
+                "metadata": {"category": "guide", "form": "closed"}
+            },
+            {
+                "id": "custom-triangle-1",
+                "type": "custom-triangle",
+                "position": {"x": 0, "y": -3, "z": 0},
+                "color": "#8A2BE2",
+                "label": "Triangle Personnalisé (Vertices)",
+                "metadata": {"category": "custom", "geometry": "flat"}
+            },
+            {
+                "id": "shader-object-1",
+                "type": "shader-object",
+                "position": {"x": 0, "y": 3, "z": 0},
+                "color": "#FFD700", // Cette couleur sera passée au shader
+                "label": "Objet avec Shader",
+                "metadata": {"category": "effect", "shader": "custom"}
+            }
+        ];
+
+        // --- Three.js Setup ---
+        let scene, camera, renderer, controls;
+        const threeJsCanvas = document.getElementById('threeJsCanvas');
+        const dataDisplay = document.getElementById('dataDisplay');
+        const load3DDataButton = document.getElementById('load3DDataButton');
+        const clear3DCanvasButton = document.getElementById('clear3DCanvasButton');
+        const generateDescriptionButton = document.getElementById('generateDescriptionButton');
+        const aiDescriptionDiv = document.getElementById('aiDescription');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        let current3DObjects = []; // Pour garder une trace des objets ajoutés à la scène
+
+        /**
+         * Initialise la scène Three.js, la caméra, le moteur de rendu et les contrôles.
+         * C'est la fonction principale pour configurer l'environnement 3D.
+         */
+        function initThreeJS() {
+            // 1. Création de la SCENE:
+            // La scène est le conteneur principal de tous les objets 3D que vous souhaitez afficher.
+            // C'est l'espace virtuel où vos modèles, lumières et caméras existeront.
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f0f0); // Définit une couleur de fond claire pour la scène.
+
+            // 2. Création de la CAMERA:
+            // La caméra définit le point de vue à partir duquel la scène est rendue.
+            // C'est comme l'œil du spectateur dans votre monde 3D.
+            // THREE.PerspectiveCamera(fov, aspect, near, far) :
+            // - fov (Field of View): L'angle de vue vertical de la caméra (en degrés).
+            // - aspect: Le rapport d'aspect de la caméra (largeur / hauteur du canevas).
+            // - near: La distance minimale à laquelle un objet peut être rendu par la caméra.
+            // - far: La distance maximale à laquelle un objet peut être rendu par la caméra.
+            camera = new THREE.PerspectiveCamera(75, threeJsCanvas.clientWidth / threeJsCanvas.clientHeight, 0.1, 1000);
+            camera.position.set(5, 5, 5); // Positionne la caméra à (5, 5, 5) dans l'espace 3D.
+            camera.lookAt(0, 0, 0); // Fait en sorte que la caméra regarde le point (0, 0, 0) (le centre de la scène).
+
+            // 3. Création du RENDERER:
+            // Le renderer est responsable de prendre la scène et la caméra, et de dessiner ce que la caméra voit
+            // sur le canevas HTML. WebGLRenderer utilise la carte graphique pour un rendu performant.
+            renderer = new THREE.WebGLRenderer({ canvas: threeJsCanvas, antialias: true });
+            renderer.setSize(threeJsCanvas.clientWidth, threeJsCanvas.clientHeight); // Définit la taille du renderer pour correspondre au canevas.
+            renderer.setPixelRatio(window.devicePixelRatio); // Ajuste la résolution pour les écrans haute densité (Retina).
+
+            // 4. Contrôles de la Caméra (OrbitControls):
+            // Les contrôles permettent à l'utilisateur d'interagir avec la caméra (rotation, zoom, déplacement).
+            // OrbitControls est très courant pour la navigation autour d'un point d'intérêt.
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; // Active le "damping" pour un mouvement plus fluide de la caméra.
+            controls.dampingFactor = 0.05; // Facteur de damping.
+            controls.screenSpacePanning = false; // Désactive le panning (déplacement latéral) dans l'espace de l'écran.
+            controls.minDistance = 2; // Distance minimale de zoom de la caméra par rapport au point d'intérêt.
+            controls.maxDistance = 50; // Distance maximale de zoom.
+
+            // Lumières pour éclairer la scène (nécessaires pour les matériaux Phong et Standard)
+            const ambientLight = new THREE.AmbientLight(0x404040); // Lumière ambiante douce, éclaire uniformément tous les objets.
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // Lumière directionnelle, simule le soleil.
+            directionalLight.position.set(1, 1, 1).normalize(); // Positionne la lumière.
+            scene.add(directionalLight);
+
+            // Grille d'aide (optionnel) - Aide à la visualisation de l'espace 3D
+            const gridHelper = new THREE.GridHelper(10, 10);
+            scene.add(gridHelper);
+
+            // Axes d'aide (optionnel) - Représente les axes X (rouge), Y (vert), Z (bleu)
+            const axesHelper = new THREE.AxesHelper(5);
+            scene.add(axesHelper);
+
+            // Lancer la boucle d'animation
+            animate();
+        }
+
+        // Boucle d'animation Three.js:
+        // C'est la fonction qui est appelée à chaque frame pour mettre à jour la scène et la rendre.
+        // `requestAnimationFrame` est la méthode recommandée pour les animations web.
+        function animate() {
+            requestAnimationFrame(animate); // Demande au navigateur de rappeler `animate` à la prochaine frame.
+            controls.update(); // Met à jour les contrôles de la caméra (important pour le damping).
+            renderer.render(scene, camera); // Rend la scène à travers la caméra.
+        }
+
+        // Gérer le redimensionnement de la fenêtre:
+        // S'assure que la visualisation 3D s'adapte lorsque la taille du navigateur change.
+        function onWindowResize() {
+            camera.aspect = threeJsCanvas.clientWidth / threeJsCanvas.clientHeight; // Met à jour le rapport d'aspect de la caméra.
+            camera.updateProjectionMatrix(); // Met à jour la matrice de projection de la caméra après le changement d'aspect.
+            renderer.setSize(threeJsCanvas.clientWidth, threeJsCanvas.clientHeight); // Redimensionne le renderer.
+        }
+        window.addEventListener('resize', onWindowResize); // Écoute l'événement de redimensionnement de la fenêtre.
+
+        /**
+         * Définition d'un Vertex Shader simple.
+         * Ce shader est exécuté pour chaque VERTEX.
+         * Il transforme la position du vertex de l'espace local à l'espace de l'écran.
+         * 'projectionMatrix', 'modelViewMatrix' sont des matrices Three.js qui effectuent ces transformations.
+         * 'position' est l'attribut de position du vertex.
+         */
+        const vertexShaderCode = `
+            void main() {
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        /**
+         * Définition d'un Fragment Shader simple.
+         * Ce shader est exécuté pour chaque pixel (fragment) de l'objet.
+         * Il détermine la couleur finale du pixel.
+         * Ici, nous utilisons une couleur uniforme (passée de JavaScript) pour colorer l'objet.
+         * 'uniform vec3 u_color' : une variable uniforme (constante pour tous les fragments d'un objet)
+         * 'gl_FragColor' : la couleur de sortie du fragment.
+         */
+        const fragmentShaderCode = `
+            uniform vec3 u_color; // Couleur uniforme passée de JavaScript
+
+            void main() {
+                gl_FragColor = vec4(u_color, 1.0); // Utilise la couleur uniforme avec une opacité de 1.0
+            }
+        `;
+
+        /**
+         * Crée un objet 3D basé sur les données JSON.
+         * Démontre l'utilisation de différents types de géométries et matériaux.
+         * Concept de VERTEX: Les géométries sont composées de vertices (points) qui définissent leur forme.
+         * Concept de SEGMENT: Les segments sont les arêtes ou les lignes qui relient les vertices.
+         * Concept de SHADER: Un shader est un petit programme exécuté sur le GPU pour calculer le rendu des pixels et des vertices.
+         * Ici, un ShaderMaterial est utilisé pour un rendu personnalisé.
+         * @param {Object} item - L'objet de données JSON.
+         * @returns {THREE.Mesh|THREE.LineSegments|null} Le mesh Three.js créé, ou null si le type est inconnu.
+         */
+        function create3DObject(item) {
+            let geometry;
+            let mesh;
+
+            switch (item.type) {
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry(item.radius || 1, 32, 32);
+                    const sphereMaterial = new THREE.MeshPhongMaterial({ color: new THREE.Color(item.color || '#cccccc') });
+                    mesh = new THREE.Mesh(geometry, sphereMaterial);
+                    break;
+                case 'box':
+                    // Accès sécurisé à item.size
+                    const boxSize = item.size || {};
+                    geometry = new THREE.BoxGeometry(boxSize.x || 1, boxSize.y || 1, boxSize.z || 1);
+                    const boxMaterial = new THREE.MeshPhongMaterial({ color: new THREE.Color(item.color || '#cccccc') });
+                    mesh = new THREE.Mesh(geometry, boxMaterial);
+                    break;
+                case 'cone':
+                    geometry = new THREE.ConeGeometry(item.radius || 1, item.height || 2, 32);
+                    const coneMaterial = new THREE.MeshPhongMaterial({ color: new THREE.Color(item.color || '#cccccc') });
+                    mesh = new THREE.Mesh(geometry, coneMaterial);
+                    break;
+                case 'cylinder':
+                    geometry = new THREE.CylinderGeometry(item.radius || 1, item.radius || 1, item.height || 2, 32);
+                    const cylinderMaterial = new THREE.MeshPhongMaterial({ color: new THREE.Color(item.color || '#cccccc') });
+                    mesh = new THREE.Mesh(geometry, cylinderMaterial);
+                    break;
+                case 'line-segment':
+                    // Accès sécurisé à item.points et à chaque point
+                    geometry = new THREE.BufferGeometry();
+                    const points = [];
+                    if (Array.isArray(item.points)) {
+                        item.points.forEach(p => {
+                            points.push(p.x || 0, p.y || 0, p.z || 0);
+                        });
+                    } else {
+                        console.warn(`Item with id ${item.id} has invalid 'points' data for 'line-segment' type. Using default points.`);
+                        points.push(0,0,0, 1,1,1); // Default points to prevent error
+                    }
+                    geometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
+                    const lineMaterial = new THREE.LineBasicMaterial({ color: new THREE.Color(item.color || '#ffffff'), linewidth: item.thickness || 1 });
+                    mesh = new THREE.LineSegments(geometry, lineMaterial); // Utilise LineSegments pour des lignes non connectées
+                    break;
+                case 'custom-triangle':
+                    // Création d'une géométrie personnalisée (un triangle) en définissant les VERTEX
+                    geometry = new THREE.BufferGeometry();
+                    // Les positions des trois vertices du triangle
+                    const vertices = new Float32Array([
+                        0.0,  1.0,  0.0, // Vertex 1 (haut)
+                       -1.0, -1.0,  0.0, // Vertex 2 (gauche)
+                        1.0, -1.0,  0.0  // Vertex 3 (droite)
+                    ]);
+                    // Associe les positions aux attributs de la géométrie
+                    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+                    // Le matériau pour le triangle
+                    const triangleMaterial = new THREE.MeshPhongMaterial({ color: new THREE.Color(item.color || '#cccccc'), side: THREE.DoubleSide });
+                    mesh = new THREE.Mesh(geometry, triangleMaterial);
+                    break;
+                case 'shader-object':
+                    // Création d'une géométrie simple (boîte) pour appliquer le shader
+                    geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+                    // Création d'un ShaderMaterial qui utilise nos Vertex et Fragment Shaders
+                    const shaderMaterial = new THREE.ShaderMaterial({
+                        uniforms: {
+                            u_color: { value: new THREE.Color(item.color || '#ffffff') } // Passe la couleur au shader
+                        },
+                        vertexShader: vertexShaderCode,
+                        fragmentShader: fragmentShaderCode
+                    });
+                    mesh = new THREE.Mesh(geometry, shaderMaterial);
+                    break;
+                default:
+                    console.warn(`Type d'objet 3D inconnu: ${item.type}`);
+                    return null;
+            }
+
+            if (mesh) {
+                // Accès sécurisé à item.position
+                const objPosition = item.position || {};
+                mesh.position.set(objPosition.x || 0, objPosition.y || 0, objPosition.z || 0);
+                mesh.name = item.id; // Pour faciliter l'identification des objets
+            }
+            return mesh;
+        }
+
+        /**
+         * Charge les données 3D et les ajoute à la scène Three.js.
+         */
+        async function load3DData() {
+            clear3DCanvas(); // Efface la scène avant de charger de nouvelles données
+
+            // Simule une requête réseau avec un délai pour mieux visualiser le chargement
+            const data = await new Promise(resolve => setTimeout(() => resolve(simulated3DData), 500));
+
+            if (data && data.length > 0) {
+                dataDisplay.textContent = JSON.stringify(data, null, 2); // Affiche les données JSON
+
+                data.forEach(item => {
+                    const object3D = create3DObject(item);
+                    if (object3D) {
+                        scene.add(object3D);
+                        current3DObjects.push(object3D);
+                    }
+                });
+                showMessageBox("Objets 3D chargés avec succès !");
+            } else {
+                showMessageBox("Aucune donnée 3D à charger.");
+            }
+        }
+
+        /**
+         * Efface tous les objets de la scène Three.js.
+         */
+        function clear3DCanvas() {
+            current3DObjects.forEach(obj => {
+                scene.remove(obj);
+                // Libérer la mémoire des géométries et matériaux
+                if (obj.geometry) obj.geometry.dispose();
+                if (obj.material) obj.material.dispose();
+            });
+            current3DObjects = [];
+            dataDisplay.textContent = "Canevas 3D effacé.";
+            aiDescriptionDiv.innerHTML = '<p class="text-muted">Cliquez sur "Générer Description IA" pour obtenir une analyse des objets 3D.</p>';
+            showMessageBox("Canevas 3D effacé.");
+        }
+
+        // --- LLM (Gemini Flash) Integration ---
+        async function generateAIDescription() {
+            if (current3DObjects.length === 0) {
+                showMessageBox("Veuillez d'abord charger des objets 3D pour générer une description.");
+                return;
+            }
+
+            loadingIndicator.classList.remove('d-none'); // Afficher l'indicateur de chargement
+            aiDescriptionDiv.innerHTML = ''; // Effacer le contenu précédent
+
+            const objectSummaries = current3DObjects.map(obj => {
+                // Récupérer les données d'origine de l'objet si possible, sinon utiliser les propriétés Three.js
+                const originalData = simulated3DData.find(d => d.id === obj.name);
+                if (originalData) {
+                    return `Un ${originalData.type} de couleur ${originalData.color} nommé "${originalData.label}" à la position (${originalData.position.x}, ${originalData.position.y}, ${originalData.position.z}).`;
+                } else {
+                    return `Un objet 3D de type ${obj.geometry.type} de couleur ${obj.material.color.getHexString()} à la position (${obj.position.x.toFixed(1)}, ${obj.position.y.toFixed(1)}, ${obj.position.z.toFixed(1)}).`;
+                }
+            }).join('\n');
+
+            const prompt = `Décrivez la scène 3D suivante en mettant en évidence les objets présents et leurs caractéristiques principales. Soyez concis et descriptif. Voici la liste des objets :\n${objectSummaries}`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // Laissez vide, Canvas fournira la clé API en runtime.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    aiDescriptionDiv.innerHTML = `<p>${text}</p>`;
+                } else {
+                    aiDescriptionDiv.innerHTML = '<p class="text-danger">Erreur: Impossible de générer la description. Structure de réponse inattendue.</p>';
+                    console.error("Erreur de structure de réponse de l'API Gemini:", result);
+                }
+            } catch (error) {
+                aiDescriptionDiv.innerHTML = '<p class="text-danger">Erreur lors de l\'appel à l\'API Gemini.</p>';
+                console.error("Erreur de l'API Gemini:", error);
+            } finally {
+                loadingIndicator.classList.add('d-none'); // Cacher l'indicateur de chargement
+            }
+        }
+
+
+        // --- Initialisation et Écouteurs d'événements ---
+        window.onload = function() {
+            initThreeJS(); // Initialiser la scène Three.js
+            // Optionnel: charger les données au démarrage
+            // load3DData();
+        };
+
+        load3DDataButton.addEventListener('click', load3DData);
+        clear3DCanvasButton.addEventListener('click', clear3DCanvas);
+        generateDescriptionButton.addEventListener('click', generateAIDescription);
+
+    </script>
+</body>
+</html>

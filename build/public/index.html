@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutoriel Canvas IA - Tableau de Bord Principal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Couleur de fond Bootstrap light */
+            color: #343a40; /* Couleur de texte Bootstrap dark */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container-fluid {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #007bff; /* Couleur primaire Bootstrap */
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0; /* Bootstrap gère déjà les marges */
+        }
+
+        h2 {
+            color: #343a40;
+            font-weight: 600;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            color: #343a40;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .card {
+            border-radius: 0.75rem; /* Coins arrondis Bootstrap */
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 20px;
+        }
+
+        /* Styles pour les sections de chat */
+        .chat-section-intro {
+            background-color: #e9f5ff; /* Bleu très clair */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            text-align: center;
+        }
+        .chat-section-intro h3 {
+            color: #0056b3;
+            margin-bottom: 1rem;
+        }
+        .chat-section-intro .btn {
+            margin: 0.5rem;
+        }
+
+        .chat-log {
+            background-color: #ffffff;
+            border: 1px solid #cce5ff; /* Bleu très clair */
+            border-radius: 0.5rem;
+            padding: 1rem;
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .chat-log div {
+            margin-bottom: 0.5rem;
+        }
+        .chat-log strong {
+            color: #007bff; /* Bleu primaire */
+        }
+        .chat-log .ai-response {
+            background-color: #e0f2fe; /* Bleu très très clair */
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.2rem;
+            border-left: 3px solid #2563eb; /* Bleu */
+        }
+        .input-area {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap; /* Permet aux éléments de passer à la ligne sur petits écrans */
+        }
+        .input-area input[type="text"], .input-area textarea {
+            flex-grow: 1;
+            padding: 0.75rem;
+            border: 1px solid #9ca3af;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%; /* S'assure que l'input/textarea prend toute la largeur disponible */
+        }
+        .input-area button {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+            white-space: nowrap; /* Empêche le texte du bouton de se casser */
+        }
+        .input-area button:hover {
+            background-color: #0056b3;
+        }
+        .loading-chat-indicator {
+            text-align: center;
+            margin-top: 1rem;
+            color: #6c757d; /* Gris Bootstrap */
+            font-style: italic;
+        }
+
+        /* Styles pour l'iframe du canevas */
+        .canvas-iframe-container {
+            background-color: #ecf0f1; /* Fond clair pour le conteneur de l'app canvas */
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%; /* S'assure que le conteneur prend de la hauteur */
+        }
+        .canvas-iframe {
+            width: 100%;
+            height: 500px; /* Hauteur fixe pour l'exemple, ajustez si besoin */
+            border: 2px solid #4f46e5; /* Bordure indigo */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background-color: white; /* Fond blanc pour l'iframe */
+        }
+
+        footer {
+            text-align: center;
+            margin-top: auto; /* Pousse le footer en bas */
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            font-size: 0.9em;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+        }
+
+        /* Message box for alerts (custom, not Bootstrap) */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            border-radius: 8px;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+        .message-box button {
+            margin-top: 15px;
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="display-4">Tutoriel : Optimisation des Canevas avec Gemini</h1>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <section class="card p-4 mb-4">
+                    <h2>Introduction au Tutoriel</h2>
+                    <p>
+                        Bienvenue dans ce tutoriel interactif. Ici, vous trouverez les explications détaillées et les snippets de code pour construire votre application de type Canva.
+
+                <div class="chat-section">
+                    <h2>Agent API REST</h2>
+                    <div id="chat-api_rest-log" class="chat-log"></div>
+                    <div class="input-area">
+                        <input type="text" id="user-input-api_rest" placeholder="Ex: Décris les endpoints pour une API de gestion de produits...">
+                        <button class="send-button" data-context="api_rest">Envoyer</button>
+                    </div>
+                    <div class="loading-chat-indicator hidden" id="loading-api_rest">Chargement...</div>
+                </div>
+            </section>
+                    </p>
+                    <p>
+                        Explorez les différentes sections pour comprendre comment intégrer des agents IA (Frontend, Backend, API REST) et comment utiliser l'IA pour générer des commandes CLI pour la gestion de votre projet.
+                    </p>
+                </section>
+
+                <section class="chat-section-intro">
+                    <h3>Interagissez avec les Agents IA</h3>
+                    <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#backendAgentModal">Agent Backend</button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#frontendAgentModal">Agent Frontend</button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#apiRestAgentModal">Agent API REST</button>
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#cliAgentModal">Générateur CLI</button>
+                        <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#crudAgentModal">Opérations CRUD</button>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-6">
+                <section class="card p-4 canvas-iframe-container">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Votre Canevas Interactif</h2>
+                    <p class="text-gray-600 text-center mb-6">
+                        Le contenu de ce canevas est chargé depuis un fichier HTML séparé pour faciliter l'itération et l'intégration des fonctionnalités 3D et de dessin IA.
+                    </p>
+                    <iframe
+                        src="canva.html"
+                        title="Application Canvas Interactive"
+                        class="canvas-iframe"
+                        sandbox="allow-scripts allow-same-origin"
+                    >
+                        Votre navigateur ne supporte pas les iframes.
+                    </iframe>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Développé avec Three.js, Bootstrap et Chart.js. &copy; 2025 Application de Canevas Optimisé.</p>
+    </footer>
+
+    <div id="messageBox" class="message-box">
+        <p id="messageText"></p>
+        <button id="messageBoxCloseButton">OK</button>
+    </div>
+
+    <div class="modal fade" id="backendAgentModal" tabindex="-1" aria-labelledby="backendAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="backendAgentModalLabel">Agent Backend</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chat-backend-log" class="chat-log"></div>
+                    <div class="input-area mt-3">
+                        <textarea id="user-input-backend" class="form-control" rows="3" placeholder="Ex: Créer une API REST avec Node.js pour gérer des utilisateurs..."></textarea>
+                        <button class="btn btn-primary mt-2 send-button" data-context="backend">Envoyer</button>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-backend">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="frontendAgentModal" tabindex="-1" aria-labelledby="frontendAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="frontendAgentModalLabel">Agent Frontend</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chat-frontend-log" class="chat-log"></div>
+                    <div class="input-area mt-3">
+                        <textarea id="user-input-frontend" class="form-control" rows="3" placeholder="Ex: Créer une page web avec un formulaire de contact en HTML, CSS et JS..."></textarea>
+                        <button class="btn btn-primary mt-2 send-button" data-context="frontend">Envoyer</button>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-frontend">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="apiRestAgentModal" tabindex="-1" aria-labelledby="apiRestAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="apiRestAgentModalLabel">Agent API REST</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chat-api_rest-log" class="chat-log"></div>
+                    <div class="input-area mt-3">
+                        <textarea id="user-input-api_rest" class="form-control" rows="3" placeholder="Ex: Décris les endpoints pour une API de gestion de produits..."></textarea>
+                        <button class="btn btn-primary mt-2 send-button" data-context="api_rest">Envoyer</button>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-api_rest">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cliAgentModal" tabindex="-1" aria-labelledby="cliAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cliAgentModalLabel">Générateur de Commandes CLI</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chat-cli-log" class="chat-log"></div>
+                    <div class="input-area mt-3">
+                        <textarea id="user-input-cli" class="form-control" rows="3" placeholder="Ex: Comment créer un nouveau dossier 'components' dans src/js ?"></textarea>
+                        <button class="btn btn-info mt-2 send-button" data-context="cli_command">Générer Commande</button>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-cli_command">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="crudAgentModal" tabindex="-1" aria-labelledby="crudAgentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crudAgentModalLabel">Opérations CRUD CLI (via IA)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center text-muted mb-4">Décrivez l'élément à manipuler, puis choisissez l'opération.</p>
+                    <div id="chat-crud-log" class="chat-log mb-3"></div>
+                    <div class="input-area d-flex flex-column flex-md-row gap-2">
+                        <textarea id="crud-input" class="form-control flex-grow-1" rows="2" placeholder="Ex: un dossier 'utils', le fichier 'main.js' en 'app.js'..."></textarea>
+                        <div class="d-flex flex-column flex-md-row gap-2">
+                            <button class="btn btn-success send-crud-button" data-context="create">CREATE</button>
+                            <button class="btn btn-warning send-crud-button" data-context="rename">RENAME</button>
+                            <button class="btn btn-primary send-crud-button" data-context="update">UPDATE</button>
+                            <button class="btn btn-danger send-crud-button" data-context="delete">DELETE</button>
+                        </div>
+                    </div>
+                    <div class="loading-chat-indicator d-none mt-2" id="loading-crud">Chargement...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <script>
+        // Fonction utilitaire pour afficher des messages personnalisés au lieu d'alert()
+        function showMessageBox(message) {
+            const messageBox = document.getElementById('messageBox');
+            const messageText = document.getElementById('messageText');
+            const messageBoxCloseButton = document.getElementById('messageBoxCloseButton');
+
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+
+            messageBoxCloseButton.onclick = () => {
+                messageBox.style.display = 'none';
+            };
+        }
+
+        // --- Chat et CLI IA ---
+        // Mapping des éléments DOM pour chaque contexte de chat
+        const chatLogs = {
+            backend: document.getElementById('chat-backend-log'),
+            frontend: document.getElementById('chat-frontend-log'),
+            api_rest: document.getElementById('chat-api_rest-log'),
+            cli_command: document.getElementById('chat-cli-log'),
+            crud: document.getElementById('chat-crud-log')
+        };
+
+        const inputFields = {
+            backend: document.getElementById('user-input-backend'),
+            frontend: document.getElementById('user-input-frontend'),
+            api_rest: document.getElementById('user-input-api_rest'),
+            cli_command: document.getElementById('user-input-cli'),
+            crud: document.getElementById('crud-input')
+        };
+
+        const loadingIndicators = {
+            backend: document.getElementById('loading-backend'),
+            frontend: document.getElementById('loading-frontend'),
+            api_rest: document.getElementById('loading-api_rest'),
+            cli_command: document.getElementById('loading-cli_command'),
+            crud: document.getElementById('loading-crud')
+        };
+
+        // Les boutons d'envoi sont maintenant dans les modales
+        // Nous allons utiliser un gestionnaire d'événements délégué ou les lier après l'initialisation des modales
+        const sendButtons = document.querySelectorAll('.send-button'); // Boutons d'envoi des modales d'agents
+        const sendCrudButtons = document.querySelectorAll('.send-crud-button'); // Boutons d'envoi des modales CRUD
+
+        // Fonction pour ajouter un message au log de chat
+        function appendMessage(context, sender, message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = `<strong>${sender}:</strong> <span class="ai-response">${message}</span>`;
+            chatLogs[context].appendChild(messageDiv);
+            chatLogs[context].scrollTop = chatLogs[context].scrollHeight; // Faire défiler vers le bas
+        }
+
+        // Fonction pour envoyer un message à l'agent IA
+        async function sendMessage(context, messageText) {
+            const message = messageText || inputFields[context].value;
+            if (!message.trim()) {
+                showMessageBox("Veuillez entrer une requête.");
+                return;
+            }
+
+            appendMessage(context, 'Vous', message);
+            if (inputFields[context]) {
+                inputFields[context].value = ''; // Effacer l'input après envoi
+            }
+
+            loadingIndicators[context].classList.remove('d-none'); // Afficher l'indicateur de chargement
+
+            try {
+                let apiUrl = `/chat/${context}`;
+                let payload = { message: message };
+
+                // Si c'est une commande CLI générique
+                if (context === 'cli_command') {
+                    apiUrl = '/cli-command';
+                    payload = { command: message };
+                } 
+                // Si c'est une commande CRUD spécifique
+                else if (['create', 'rename', 'update', 'delete'].includes(context)) {
+                    apiUrl = `/${context}`;
+                    payload = { message: message };
+                }
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.response) {
+                    appendMessage(context, 'IA', data.response);
+                } else {
+                    appendMessage(context, 'IA', 'Aucune réponse valide de l\'IA.');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la communication avec l\'IA :', error);
+                appendMessage(context, 'IA', `Erreur de communication : ${error.message}. Assurez-vous que le serveur Node.js est en cours d'exécution et gère les requêtes CORS.`);
+            } finally {
+                loadingIndicators[context].classList.add('d-none'); // Masquer l'indicateur de chargement
+            }
+        }
+
+        // Écouteurs d'événements pour les boutons d'envoi (agents)
+        sendButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const context = button.dataset.context;
+                sendMessage(context);
+            });
+        });
+
+        // Écouteurs d'événements pour les boutons CRUD
+        sendCrudButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const context = button.dataset.context;
+                const message = inputFields.crud.value; // Récupère le texte de l'input CRUD
+                sendMessage(context, message);
+            });
+        });
+
+        // Gérer la touche "Entrée" dans les champs de saisie des modales
+        Object.values(inputFields).forEach(input => {
+            if (input) { // Vérifier si l'input existe (car crud-input est un textarea)
+                input.addEventListener('keypress', (event) => {
+                    if (event.key === 'Enter') {
+                        // Empêcher le comportement par défaut (saut de ligne dans textarea)
+                        event.preventDefault(); 
+                        const context = event.target.id.replace('user-input-', '').replace('-input', ''); // Obtient le contexte de l'ID
+                        if (context === 'crud') {
+                            showMessageBox("Veuillez cliquer sur un bouton CREATE/RENAME/UPDATE/DELETE pour envoyer la commande.");
+                        } else {
+                            sendMessage(context);
+                        }
+                    }
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>
